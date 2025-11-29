@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punjab Bus Service - Passenger Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --secondary: #0e76e8;
+            --accent: #00c2ff;
+            --light: #f3f4f6;
+            --dark: #1f2937;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray: #6b7280;
+            --card-bg: rgba(255, 255, 255, 0.92);
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: rgba(26, 86, 219, 0.95);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        .back-button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: rgba(26, 86, 219, 0.85);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin: 30px 0;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 25px;
+            opacity: 0.9;
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 1.8rem;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .feature-content {
+            padding: 25px;
+        }
+        
+        .feature-content h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-size: 1.4rem;
+        }
+        
+        .feature-content p {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .feature-button {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            border: none;
+        }
+        
+        .feature-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(31, 41, 55, 0.95);
+            color: white;
+            padding: 40px 0;
+            margin-top: 80px;
+            border-radius: 16px 16px 0 0;
+            backdrop-filter: blur(5px);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+        
+        .footer-section p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+        
+        .footer-section a {
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+            color: var(--light);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .close-button:hover {
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        /* Map Styling */
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        /* Schedule Table Styling */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .schedule-table th, .schedule-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .schedule-table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+        
+        .schedule-table tr:hover {
+            background-color: #f9fafb;
+        }
+        
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.2);
+        }
+        
+        /* Alert Styling */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .alert-warning {
+            background-color: #fef3cd;
+            color: #856404;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid var(--accent);
+        }
+        
+        /* Seat Layout */
+        .seat-layout {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .seat {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .seat-available {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+        
+        .seat-occupied {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+            cursor: not-allowed;
+        }
+        
+        .seat-selected {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border: 2px solid var(--primary);
+        }
+        
+        /* Rating System */
+        .rating {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .rating input {
+            display: none;
+        }
+        
+        .rating label {
+            font-size: 2rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .rating input:checked ~ label {
+            color: #d1d5db;
+        }
+        
+        .rating label:hover,
+        .rating label:hover ~ label,
+        .rating input:checked + label,
+        .rating input:checked ~ label {
+            color: #f59e0b;
+        }
+        
+        /* Language Options */
+        .language-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .language-option {
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .language-option:hover {
+            border-color: var(--primary);
+            background-color: #f0f7ff;
+        }
+        
+        .language-option.selected {
+            border-color: var(--primary);
+            background-color: #e0f2fe;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card {
+                margin: 0 10px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                height: 80%;
+            }
+            
+            #map {
+                height: 300px;
+            }
+            
+            .schedule-table {
+                font-size: 0.9rem;
+            }
+            
+            .seat-layout {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Back Button -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-bus"></i>
+                <span>Punjab Bus Service</span>
+            </div>
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="container">
+        <section class="hero">
+            <h1>Passenger Portal</h1>
+            <p>Access all bus services in Punjab. Real-time tracking, booking, alerts and more to make your journey easier.</p>
+        </section>
+    </div>
+
+    <!-- Features Grid -->
+    <section class="container">
+        <div class="features-grid">
+            <!-- ETA & Bus Timings -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>ETA & Bus Timings</h3>
+                    <p>Get accurate estimated arrival times and updated bus schedules for all routes.</p>
+                    <button class="feature-button" onclick="openModal('etaModal')">Check Schedule</button>
+                </div>
+            </div>
+
+            <!-- Nearby Bus Stops -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Nearby Bus Stops</h3>
+                    <p>Find the closest bus stops to your location with complete route information.</p>
+                    <button class="feature-button" onclick="openModal('stopsModal')">Find Stops</button>
+                </div>
+            </div>
+
+            <!-- Live Bus Tracking -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Live Bus Tracking</h3>
+                    <p>View real-time bus locations on an interactive map of Punjab. Never miss your bus again.</p>
+                    <button class="feature-button" onclick="openModal('trackingModal')">Track Now</button>
+                </div>
+            </div>
+
+            <!-- Live Alerts -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Live Alerts</h3>
+                    <p>Receive notifications about delays, route changes, or important announcements.</p>
+                    <button class="feature-button" onclick="openModal('alertsModal')">Set Alerts</button>
+                </div>
+            </div>
+
+            <!-- Ticket Booking -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Ticket Booking</h3>
+                    <p>Book and pay for bus tickets online. Skip the lines and travel with ease.</p>
+                    <button class="feature-button" onclick="openModal('ticketModal')">Book Tickets</button>
+                </div>
+            </div>
+
+            <!-- Passenger Count -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Passenger Count</h3>
+                    <p>See live seat availability and occupancy to choose less crowded buses.</p>
+                    <button class="feature-button" onclick="openModal('passengerModal')">Check Availability</button>
+                </div>
+            </div>
+
+            <!-- Language Options -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Language Options</h3>
+                    <p>Change language for better accessibility. Multiple languages supported.</p>
+                    <button class="feature-button" onclick="openModal('languageModal')">Change Language</button>
+                </div>
+            </div>
+
+            <!-- Feedback System -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Feedback System</h3>
+                    <p>Rate your journey and driver performance. Help us improve our services.</p>
+                    <button class="feature-button" onclick="openModal('feedbackModal')">Provide Feedback</button>
+                </div>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Emergency Contact</h3>
+                    <p>Quick access to bus helpline or SOS service for emergency situations.</p>
+                    <button class="feature-button" onclick="openModal('emergencyModal')">Contact Help</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Punjab Bus Service</h3>
+                    <p>Punjab Bus Service provides innovative public transportation solutions to make urban mobility seamless and efficient for everyone in Punjab.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#">Fares & Passes</a></p>
+                    <p><a href="#">Routes & Schedules</a></p>
+                    <p><a href="#">Service Updates</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-phone"></i>  011- 41187700 </p>
+                    <p><i class="fas fa-envelope"></i> support@punjabbus.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Punjab Bus Service. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ETA & Bus Timings Modal -->
+    <div id="etaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-clock"></i> ETA & Bus Timings</h2>
+                <button class="close-button" onclick="closeModal('etaModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Bus Schedule for Route 101 (Bathinda to Moga)</h3>
+                <p>Next bus arrives in: <strong>8 minutes</strong></p>
+                
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Stop Name</th>
+                            <th>Arrival Time</th>
+                            <th>Departure Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Bathinda Bus Stand</td>
+                            <td>08:00 AM</td>
+                            <td>08:05 AM</td>
+                        </tr>
+                        <tr>
+                            <td>Rampura Phul</td>
+                            <td>08:35 AM</td>
+                            <td>08:37 AM</td>
+                        </tr>
+                        <tr>
+                            <td>Barnala</td>
+                            <td>09:15 AM</td>
+                            <td>09:17 AM</td>
+                        </tr>
+                        <tr>
+                            <td>Moga Bus Terminal</td>
+                            <td>10:05 AM</td>
+                            <td>10:07 AM</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 20px;">
+                    <h3>Other Routes</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                        <button class="feature-button" style="padding: 8px 15px;">Route 102</button>
+                        <button class="feature-button" style="padding: 8px 15px;">Route 103</button>
+                        <button class="feature-button" style="padding: 8px 15px;">Route 201</button>
+                        <button class="feature-button" style="padding: 8px 15px;">Route 202</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nearby Bus Stops Modal -->
+    <div id="stopsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-map-marker-alt"></i> Nearby Bus Stops</h2>
+                <button class="close-button" onclick="closeModal('stopsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Bus stops near your current location:</p>
+                
+                <div style="margin-top: 20px;">
+                    <h3>Closest Stops</h3>
+                    <ul style="list-style-type: none; margin-top: 10px;">
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Bathinda Bus Stand</strong> - 0.3 km away
+                            <div>Routes: 101, 102, 201</div>
+                        </li>
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Model Town Stop</strong> - 0.6 km away
+                            <div>Routes: 101, 103</div>
+                        </li>
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Rampura Phul Bus Stop</strong> - 1.0 km away
+                            <div>Routes: 102, 201, 202</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Bus Tracking Modal -->
+    <div id="trackingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-bus"></i> Live Bus Tracking</h2>
+                <button class="close-button" onclick="closeModal('trackingModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="map"></div>
+                <div style="margin-top: 20px;">
+                    <h3>Active Buses in Punjab</h3>
+                    <ul style="list-style-type: none; margin-top: 10px;">
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Bus #101A</strong> - Route 101 (Bathinda to Moga) - 5 min away
+                        </li>
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Bus #202B</strong> - Route 202 (Firozpur to Faridkot) - 8 min away
+                        </li>
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Bus #103C</strong> - Route 103 (Muktsar to Malout) - 12 min away
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Alerts Modal -->
+    <div id="alertsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-bell"></i> Live Alerts</h2>
+                <button class="close-button" onclick="closeModal('alertsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    <div>
+                        <h4>Route 101 Delay</h4>
+                        <p>Due to traffic congestion near Rampura Phul, Route 101 is experiencing delays of approximately 15 minutes.</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                    <div>
+                        <h4>Route Change Notice</h4>
+                        <p>From next Monday, Route 202 will be extended to serve the new industrial area in Malout.</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    <div>
+                        <h4>Weather Advisory</h4>
+                        <p>Due to expected heavy rain tomorrow, some routes in Punjab may experience delays.</p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Alert Preferences</h3>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" checked> Route Delays
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" checked> Route Changes
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" checked> Weather Advisories
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox"> Special Events
+                    </label>
+                </div>
+                
+                <button class="feature-button" style="margin-top: 15px;">Save Preferences</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Booking Modal -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-ticket-alt"></i> Ticket Booking</h2>
+                <button class="close-button" onclick="closeModal('ticketModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Book Your Journey in Punjab</h3>
+                
+                <div class="form-group">
+                    <label for="fromLocation">From</label>
+                    <select class="form-control" id="fromLocation">
+                        <option value="">Select starting point</option>
+                        <option value="bathinda">Bathinda</option>
+                        <option value="moga">Moga</option>
+                        <option value="firozpur">Firozpur</option>
+                        <option value="faridkot">Faridkot</option>
+                        <option value="muktsar">Muktsar</option>
+                        <option value="malout">Malout</option>
+                        <option value="barnala">Barnala</option>
+                        <option value="rampura">Rampura Phul</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="toLocation">To</label>
+                    <select class="form-control" id="toLocation">
+                        <option value="">Select destination</option>
+                        <option value="bathinda">Bathinda</option>
+                        <option value="moga">Moga</option>
+                        <option value="firozpur">Firozpur</option>
+                        <option value="faridkot">Faridkot</option>
+                        <option value="muktsar">Muktsar</option>
+                        <option value="malout">Malout</option>
+                        <option value="barnala">Barnala</option>
+                        <option value="rampura">Rampura Phul</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="travelDate">Date</label>
+                    <input type="date" class="form-control" id="travelDate">
+                </div>
+                
+                <div class="form-group">
+                    <label for="passengerCount">Passengers</label>
+                    <select class="form-control" id="passengerCount">
+                        <option value="1">1 Passenger</option>
+                        <option value="2">2 Passengers</option>
+                        <option value="3">3 Passengers</option>
+                        <option value="4">4 Passengers</option>
+                    </select>
+                </div>
+                
+                <button class="feature-button">Search Routes</button>
+                
+                <div style="margin-top: 30px;">
+                    <h3>Fare Information</h3>
+                    <table class="schedule-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket Type</th>
+                                <th>Price</th>
+                                <th>Validity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Single Journey</td>
+                                <td>₹50</td>
+                                <td>2 hours</td>
+                            </tr>
+                            <tr>
+                                <td>Day Pass</td>
+                                <td>₹200</td>
+                                <td>24 hours</td>
+                            </tr>
+                            <tr>
+                                <td>Weekly Pass</td>
+                                <td>₹1000</td>
+                                <td>7 days</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passenger Count Modal -->
+    <div id="passengerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-users"></i> Passenger Count</h2>
+                <button class="close-button" onclick="closeModal('passengerModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Live Bus Occupancy</h3>
+                <p>Check how crowded buses are in real-time:</p>
+                
+                <div class="form-group">
+                    <label for="routeSelect">Select Route</label>
+                    <select class="form-control" id="routeSelect" onchange="updateOccupancy()">
+                        <option value="101">Route 101 - Bathinda to Moga</option>
+                        <option value="102">Route 102 - Firozpur to Faridkot</option>
+                        <option value="103">Route 103 - Muktsar to Malout</option>
+                        <option value="201">Route 201 - Barnala to Rampura Phul</option>
+                    </select>
+                </div>
+                
+                <div id="occupancyInfo">
+                    <div style="display: flex; align-items: center; gap: 15px; margin: 20px 0;">
+                        <div style="font-size: 2rem; color: #10b981;">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                        <div>
+                            <h4>Route 101 - Bathinda to Moga</h4>
+                            <p>Next bus: <strong>8 minutes</strong></p>
+                            <p>Current occupancy: <strong style="color: #10b981;">Low (35% full)</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="seat-layout">
+                        <div class="seat seat-available">1</div>
+                        <div class="seat seat-available">2</div>
+                        <div class="seat seat-occupied">3</div>
+                        <div class="seat seat-available">4</div>
+                        <div class="seat seat-occupied">5</div>
+                        <div class="seat seat-available">6</div>
+                        <div class="seat seat-available">7</div>
+                        <div class="seat seat-occupied">8</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4>Occupancy Legend</h4>
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 20px; height: 20px; background-color: #d1fae5; border: 2px solid #10b981; border-radius: 4px;"></div>
+                            <span>Available</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 20px; height: 20px; background-color: #fee2e2; border: 2px solid #ef4444; border-radius: 4px;"></div>
+                            <span>Occupied</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Language Options Modal -->
+    <div id="languageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-globe"></i> Language Options</h2>
+                <button class="close-button" onclick="closeModal('languageModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Select Your Preferred Language</h3>
+                <p>Choose the language you're most comfortable with:</p>
+                
+                <div class="language-options">
+                    <div class="language-option selected">
+                        <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.5rem; margin-bottom: 10px;"></i>
+                        <h4>English</h4>
+                        <p>English</p>
+                    </div>
+                    
+                    <div class="language-option">
+                        <i class="fas fa-globe" style="color: #6b7280; font-size: 1.5rem; margin-bottom: 10px;"></i>
+                        <h4>ਪੰਜਾਬੀ</h4>
+                        <p>Punjabi</p>
+                    </div>
+                    
+                    <div class="language-option">
+                        <i class="fas fa-globe" style="color: #6b7280; font-size: 1.5rem; margin-bottom: 10px;"></i>
+                        <h4>हिन्दी</h4>
+                        <p>Hindi</p>
+                    </div>
+                    
+                    <div class="language-option">
+                        <i class="fas fa-globe" style="color: #6b7280; font-size: 1.5rem; margin-bottom: 10px;"></i>
+                        <h4>Urdu</h4>
+                        <p>اردو</p>
+                    </div>
+                </div>
+                
+                <button class="feature-button" style="margin-top: 20px;">Apply Language</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback System Modal -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-star"></i> Feedback System</h2>
+                <button class="close-button" onclick="closeModal('feedbackModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Rate Your Experience</h3>
+                <p>We value your feedback to improve our services.</p>
+                
+                <div class="form-group">
+                    <label for="routeFeedback">Select Route</label>
+                    <select class="form-control" id="routeFeedback">
+                        <option value="">Select a route</option>
+                        <option value="101">Route 101</option>
+                        <option value="102">Route 102</option>
+                        <option value="103">Route 103</option>
+                        <option value="201">Route 201</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="busNumber">Bus Number (optional)</label>
+                    <input type="text" class="form-control" id="busNumber" placeholder="Enter bus number if known">
+                </div>
+                
+                <div class="form-group">
+                    <label>Overall Rating</label>
+                    <div class="rating">
+                        <input type="radio" id="star5" name="rating" value="5">
+                        <label for="star5"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1"><i class="fas fa-star"></i></label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comments">Comments</label>
+                    <textarea class="form-control" id="comments" rows="4" placeholder="Tell us about your experience..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox"> Would you like to be contacted about your feedback?
+                    </label>
+                </div>
+                
+                <button class="feature-button">Submit Feedback</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Contact Modal -->
+    <div id="emergencyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-phone-alt"></i> Emergency Contact</h2>
+                <button class="close-button" onclick="closeModal('emergencyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Emergency Assistance</h3>
+                <p>In case of emergency, use the following contacts:</p>
+                
+                <div style="background-color: #fee2e2; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                    <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #ef4444;"></i>
+                    <h3 style="color: #ef4444; margin: 15px 0;">Emergency Helpline</h3>
+                    <p style="font-size: 1.5rem; font-weight: bold;">108</p>
+                    <p>Available 24/7 for emergency situations</p>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h4>Other Important Contacts</h4>
+                    <ul style="list-style-type: none; margin-top: 10px;">
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Customer Service</strong>
+                            <div>1800-123-4567</div>
+                            <small>Mon-Fri: 8AM-6PM, Sat-Sun: 9AM-5PM</small>
+                        </li>
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Lost and Found</strong>
+                            <div>0172-1234567</div>
+                            <small>Mon-Frid: 9AM-5PM</small>
+                        </li>
+                        <li style="padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <strong>Security Office</strong>
+                            <div>0172-9876543</div>
+                            <small>Available 24/7</small>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h4>Emergency Procedures</h4>
+                    <p>In case of emergency on a bus:</p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>Stay calm and follow driver instructions</li>
+                        <li>Use emergency exits if necessary</li>
+                        <li>Move to a safe location if evacuation is required</li>
+                        <li>Contact emergency services if needed</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Modal functionality
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            
+            if (modalId === 'trackingModal') {
+                initMap(modalId);
+            }
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Close modal if user clicks outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                const modals = document.getElementsByClassName('modal');
+                for (let i = 0; i < modals.length; i++) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+        
+        // Go back function
+        function goBack() {
+            alert("Returning to homepage...");
+            window.location.href = "index.html"; // Actual navigation
+        }
+        
+        // Map initialization for Punjab's small cities
+        let map;
+        
+        function initMap(modalId) {
+            if (modalId === 'trackingModal') {
+                // Initialize map centered on Punjab's small cities region
+                if (!map) {
+                    map = L.map('map').setView([30.2070, 74.9455], 9); // Coordinates for Bathinda area
+                    
+                    // Add OpenStreetMap tiles
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+                } else {
+                    map.invalidateSize(); // Refresh map size when modal is opened
+                }
+                
+                // Add some sample bus markers in Punjab's small cities
+                const busIcon = L.divIcon({
+                    className: 'bus-icon',
+                    html: '<i class="fas fa-bus" style="color: #1a56db; font-size: 24px;"></i>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                // Sample bus locations in Punjab's small cities
+                const busLocations = [
+                    {lat: 30.2070, lng: 74.9455, id: "101A", city: "Bathinda"},
+                    {lat: 30.8167, lng: 75.1667, id: "202B", city: "Moga"},
+                    {lat: 30.9167, lng: 74.6000, id: "103C", city: "Firozpur"}
+                ];
+                
+                // Add markers to map
+                busLocations.forEach(bus => {
+                    L.marker([bus.lat, bus.lng], {icon: busIcon})
+                        .addTo(map)
+                        .bindPopup(`<b>Bus ${bus.id}</b><br>Route ${bus.id.substring(0,3)}<br>Near ${bus.city}<br><small>Last update: 1 min ago</small>`);
+                });
+                
+                // Add user location marker (simulated in Bathinda)
+                const userIcon = L.divIcon({
+                    className: 'user-icon',
+                    html: '<i class="fas fa-user" style="color: #10b981; font-size: 20px;"></i>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                L.marker([30.2100, 74.9500], {icon: userIcon})
+                    .addTo(map)
+                    .bindPopup('<b>Your Location</b><br>Bathinda')
+                    .openPopup();
+            }
+        }
+        
+        // Language selection
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.language-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    opt.querySelector('i').className = 'fas fa-globe';
+                    opt.querySelector('i').style.color = '#6b7280';
+                });
+                
+                this.classList.add('selected');
+                this.querySelector('i').className = 'fas fa-check-circle';
+                this.querySelector('i').style.color = '#10b981';
+            });
+        });
+        
+        // Seat selection
+        document.querySelectorAll('.seat-available').forEach(seat => {
+            seat.addEventListener('click', function() {
+                this.classList.toggle('seat-selected');
+                this.classList.toggle('seat-available');
+            });
+        });
+        
+        // Update occupancy information
+        function updateOccupancy() {
+            const route = document.getElementById('routeSelect').value;
+            const occupancyInfo = document.getElementById('occupancyInfo');
+            
+            let occupancyLevel, occupancyColor;
+            
+            switch(route) {
+                case '101':
+                    occupancyLevel = 'Low (35% full)';
+                    occupancyColor = '#10b981';
+                    break;
+                case '102':
+                    occupancyLevel = 'Medium (65% full)';
+                    occupancyColor = '#f59e0b';
+                    break;
+                case '103':
+                    occupancyLevel = 'High (85% full)';
+                    occupancyColor = '#ef4444';
+                    break;
+                case '201':
+                    occupancyLevel = 'Low (40% full)';
+                    occupancyColor = '#10b981';
+                    break;
+            }
+            
+            occupancyInfo.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px; margin: 20px 0;">
+                    <div style="font-size: 2rem; color: ${occupancyColor};">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <div>
+                        <h4>Route ${route} - ${getRouteName(route)}</h4>
+                        <p>Next bus: <strong>8 minutes</strong></p>
+                        <p>Current occupancy: <strong style="color: ${occupancyColor};">${occupancyLevel}</strong></p>
+                    </div>
+                </div>
+                
+                <div class="seat-layout">
+                    <div class="seat ${getRandomSeatStatus()}">1</div>
+                    <div class="seat ${getRandomSeatStatus()}">2</div>
+                    <div class="seat ${getRandomSeatStatus()}">3</div>
+                    <div class="seat ${getRandomSeatStatus()}">4</div>
+                    <div class="seat ${getRandomSeatStatus()}">5</div>
+                    <div class="seat ${getRandomSeatStatus()}">6</div>
+                    <div class="seat ${getRandomSeatStatus()}">7</div>
+                    <div class="seat ${getRandomSeatStatus()}">8</div>
+                </div>
+            `;
+            
+            // Reattach event listeners to new seats
+            document.querySelectorAll('.seat-available').forEach(seat => {
+                seat.addEventListener('click', function() {
+                    this.classList.toggle('seat-selected');
+                    this.classList.toggle('seat-available');
+                });
+            });
+        }
+        
+        function getRouteName(route) {
+            switch(route) {
+                case '101': return 'Bathinda to Moga';
+                case '102': return 'Firozpur to Faridkot';
+                case '103': return 'Muktsar to Malout';
+                case '201': return 'Barnala to Rampura Phul';
+                default: return '';
+            }
+        }
+        
+        function getRandomSeatStatus() {
+            const rand = Math.random();
+            if (rand < 0.4) return 'seat-available';
+            if (rand < 0.8) return 'seat-occupied';
+            return 'seat-selected';
+        }
+    </script>
+</body>
+</html>

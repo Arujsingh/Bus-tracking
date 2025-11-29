@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityTrack - Public Transport Tracking in small cities </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        header {
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            font-size: 42px;
+            margin-right: 15px;
+            color: #FFD700;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .description {
+            max-width: 700px;
+            margin: 0 auto 50px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+        
+        .btn {
+            width: 280px;
+            height: 280px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn i {
+            font-size: 70px;
+            margin-bottom: 25px;
+        }
+        
+        .btn-text {
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .btn-subtext {
+            font-size: 16px;
+            margin-top: 15px;
+            opacity: 0.8;
+            max-width: 200px;
+        }
+        
+        .driver-btn {
+            background: rgba(219, 10, 91, 0.2);
+        }
+        
+        .driver-btn:hover {
+            background: rgba(219, 10, 91, 0.3);
+        }
+        
+        .passenger-btn {
+            background: rgba(15, 157, 88, 0.2);
+        }
+        
+        .passenger-btn:hover {
+            background: rgba(15, 157, 88, 0.3);
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            width: 280px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .feature i {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+        
+        .feature h3 {
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        footer {
+            margin-top: 50px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .button-container {
+                gap: 20px;
+            }
+            
+            .btn {
+                width: 240px;
+                height: 240px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .feature {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-bus logo-icon"></i>
+                <h1>City<span style="color: #FFD700;">Track</span></h1>
+            </div>
+            <p class="tagline">Real-Time Public Transportation Tracking in small cities</p>
+        </header>
+        
+        <div class="description">
+            <p>Welcome to CityTrack, the innovative solution for real-time public transportation tracking in small cities. Select your role to get started.</p>
+        </div>
+        
+        <div class="button-container">
+            <a href="driver.html" class="btn driver-btn">
+                <i class="fas fa-id-card-alt"></i>
+                <span class="btn-text">Driver Portal</span>
+                <span class="btn-subtext">Access your route and tracking information</span>
+            </a>
+            
+            <a href="passenger.html" class="btn passenger-btn">
+                <i class="fas fa-user"></i>
+                <span class="btn-text">Passenger Portal</span>
+                <span class="btn-subtext">Track your bus and plan your journey</span>
+            </a>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Live Tracking</h3>
+                <p>Real-time location of all buses on the map</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-clock"></i>
+                <h3>ETA Predictions</h3>
+                <p>Accurate arrival time predictions</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-bell"></i>
+                <h3>Notifications</h3>
+                <p>Get alerts for delays and schedule changes</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 CityTrack - Public Transportation Tracking System</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple animation for buttons on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach((btn, index) => {
+                setTimeout(() => {
+                    btn.style.opacity = 1;
+                    btn.style.transform = 'translateY(0)';
+                }, 300 * index);
+            });
+        });
+    </script>
+</body>
+</html>
